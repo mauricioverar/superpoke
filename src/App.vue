@@ -21,7 +21,7 @@
       />
     </div>
 
-    <div v-if="!inicio">
+    <div v-if="!inicio" class="container">
       <v-row class="mt-5">
         <v-col>
           <div v-for="(item, clave) in heroes" :key="clave">
@@ -38,7 +38,7 @@
                   class="hero imagen"
                 />
                 <div v-if="usHero">
-                  <p class="mb-5">
+                  <p class="">
                     {{ item.powerstats.strength }}💪 <span> __ </span>
                     {{ item.powerstats.combat }}🤚
                   </p>
@@ -48,6 +48,8 @@
           </div>
           <!-- <pre> {{heroes}} </pre> -->
         </v-col>
+
+        <v-col></v-col>
 
         <v-col>
           <div v-for="(item, index) in pokemons" :key="index">
@@ -61,10 +63,10 @@
                   @click="modalPoke(index)"
                   :src="item.sprites.back_default"
                   alt="Sin imágen"
-                  class="hero imagen"
+                  class="poke imagen"
                 />
                 <div v-if="usPoke">
-                  <p class="mb-16">
+                  <p class="">
                     {{ (item.stats[1].base_stat * 20) / 100 }}💪
                     <span> __ </span>
                     {{ (item.stats[2].base_stat * 20) / 100 }}🤚
@@ -285,6 +287,13 @@ export default {
 
 <style scoped>
 .hero {
+  width: 100px;
+  /* height: 100px; */
+  /* margin-bottom: 10px; */
+  color: red;
+  border: 2px solid black;
+}
+.poke {
   width: 100px;
   /* margin-bottom: 10px; */
   color: red;
