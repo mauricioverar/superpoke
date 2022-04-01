@@ -85,7 +85,7 @@
         <v-row>
           <v-col>
             <v-img max-height="250" max-width="250" :src="imgPoke"></v-img>
-            <h6 class="ms-3">{{ defPoke }}🤚</h6>
+            <h6 class="ms-3">{{ defPoke }}🤚<span> - {{rest}}💥 </span> </h6>
           </v-col>
 
           <v-col>
@@ -101,12 +101,40 @@
         <v-row>
           <v-col>
             <v-img max-height="250" max-width="250" :src="imgHero"></v-img>
-            <h6 class="ms-3">{{ defHero }}🤚</h6>
+            <h6 class="ms-3">{{ defHero }}🤚<span> - {{rest}}💥 </span></h6>
           </v-col>
 
           <v-col>
             <v-img max-height="250" max-width="250" :src="imgPoke"></v-img>
             <h6 class="ms-3">{{ atackPoke }}💪</h6>
+          </v-col>
+        </v-row>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="heroWin" max-width="290">
+      <v-card>
+        <v-row>
+          <v-col>
+            <h3 class="mx-auto">✨✨Heroes Ganan✨✨</h3>
+          </v-col>
+
+          <v-col>
+            <v-img max-height="250" max-width="250" src="@/assets/super.jpg"></v-img>
+          </v-col>
+        </v-row>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="pokeWin" max-width="290">
+      <v-card>
+        <v-row>
+          <v-col>
+            <h3 class="mx-auto">✨✨Pokemones Ganan✨✨</h3>
+          </v-col>
+
+          <v-col>
+            <v-img max-height="250" max-width="250" src="@/assets/poke.jpg"></v-img>
           </v-col>
         </v-row>
       </v-card>
@@ -131,7 +159,11 @@ export default {
     defPoke: 0,
     defHero: 0,
     usHero: false,
-    usPoke: false
+    usPoke: false,
+    rest: 0,
+    heroWin: false,
+    pokeWin: false
+
     // us: 0
     //
   }),
@@ -171,17 +203,32 @@ export default {
 
         this.atackHero = this.heroes[clave].powerstats.strength
         this.defPoke = (this.pokemons[0].stats[2].base_stat * 20) / 100
+        
         // if (this.atackHero = null) {this.atackHero = 0}
         // if (this.defPoke = null) {this.defPoke = 0}
 
-        if (this.atackHero < this.defPoke || this.atackHero == 'null') {
+        if (this.atackHero < (this.defPoke - this.rest) || this.atackHero == 'null') {
           console.log('resiste poke')
+          let resta = this.defPoke - this.atackHero
+          this.rest = resta
+          console.log(resta)
+          console.log('def',this.defPoke)
+
+          // this.defPoke = resta
+          // console.log('def',this.defPoke)
+
+
         } else {
           this.minusPoke(this.pokemons[0])
+          this.rest = 0
           console.log('elimina poke')
           console.log(this.pokemons)
           if (this.pokemons == '') {
-            alert('ganan Heroes')
+            setTimeout(() => {
+            this.heroWin = true
+
+            }, 2000)
+            // alert('ganan Heroes')
           }
         }
 
@@ -200,13 +247,29 @@ export default {
         this.defHero = this.heroes[0].powerstats.combat
 
         console.log(this.pokemons[index])
+        let resta = 0
+        let def = this.defHero - this.rest
+        console.log('rest ', this.rest)
 
-        if (this.atackPoke < this.defHero) {
+        if (this.atackPoke < def || this.atackPoke == 'null') {
           // this.heroes.shift()
           console.log('resiste hero')
+          resta = def - this.atackPoke
+        console.log('resta ', resta)
+
+          this.rest = resta
+          console.log(resta)
+          console.log('def',this.defHero)
         } else {
           this.minusHero(this.heroes[0])
           console.log('elimina hero')
+          this.rest = 0
+          if (this.heroes == '') {
+            setTimeout(() => {
+            this.pokeWin = true
+
+            }, 2000)
+          }
         }
 
         this.dialogPoke = true
