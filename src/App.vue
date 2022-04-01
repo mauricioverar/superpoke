@@ -80,17 +80,17 @@
       </v-row>
     </div>
 
-    <v-dialog v-model="dialogHero" max-width="290">
+    <v-dialog v-model="dialogHero" max-width="260">
       <v-card>
         <v-row>
           <v-col>
             <v-img max-height="250" max-width="250" :src="imgPoke"></v-img>
-            <h6>{{ defPoke }}🤚</h6>
+            <h6 class="ms-3">{{ defPoke }}🤚</h6>
           </v-col>
 
           <v-col>
             <v-img max-height="250" max-width="250" :src="imgHero"></v-img>
-            <h6>{{ atackHero }}💪</h6>
+            <h6 class="ms-3">{{ atackHero }}💪</h6>
           </v-col>
         </v-row>
       </v-card>
@@ -101,12 +101,12 @@
         <v-row>
           <v-col>
             <v-img max-height="250" max-width="250" :src="imgHero"></v-img>
-            <h6>{{ defHero }}🤚</h6>
+            <h6 class="ms-3">{{ defHero }}🤚</h6>
           </v-col>
 
           <v-col>
             <v-img max-height="250" max-width="250" :src="imgPoke"></v-img>
-            <h6>{{ atackPoke }}💪</h6>
+            <h6 class="ms-3">{{ atackPoke }}💪</h6>
           </v-col>
         </v-row>
       </v-card>
@@ -142,7 +142,12 @@ export default {
   },
 
   methods: {
-    ...mapActions(['get_SuperHeros', 'get_Pokemones', 'minusHero', 'minusPoke']),
+    ...mapActions([
+      'get_SuperHeros',
+      'get_Pokemones',
+      'minusHero',
+      'minusPoke'
+    ]),
 
     opcionHero() {
       this.usHero = true
@@ -158,52 +163,54 @@ export default {
     },
 
     modalHero(clave) {
-      console.log('us ', this.us) // 1
-      console.log('us-heroe')
-      this.imgHero = this.heroes[clave].image.url
-      this.imgPoke = this.pokemons[0].sprites.back_default
+      if (this.usHero) {
+        console.log('us ', this.us) // 1
+        console.log('us-heroe')
+        this.imgHero = this.heroes[clave].image.url
+        this.imgPoke = this.pokemons[0].sprites.back_default
 
-      this.atackHero = this.heroes[clave].powerstats.strength
-      this.defPoke = (this.pokemons[0].stats[2].base_stat * 20) / 100
-      // if (this.atackHero = null) {this.atackHero = 0}
-      // if (this.defPoke = null) {this.defPoke = 0}
+        this.atackHero = this.heroes[clave].powerstats.strength
+        this.defPoke = (this.pokemons[0].stats[2].base_stat * 20) / 100
+        // if (this.atackHero = null) {this.atackHero = 0}
+        // if (this.defPoke = null) {this.defPoke = 0}
 
-      if (this.atackHero < this.defPoke || this.atackHero == 'null') {
-        console.log('resiste poke')
-      } else {
-        this.minusPoke(this.pokemons[0])
-        console.log('elimina poke')
-        console.log(this.pokemons)
-        if (this.pokemons == '') {
-        alert ('ganan Heroes')
+        if (this.atackHero < this.defPoke || this.atackHero == 'null') {
+          console.log('resiste poke')
+        } else {
+          this.minusPoke(this.pokemons[0])
+          console.log('elimina poke')
+          console.log(this.pokemons)
+          if (this.pokemons == '') {
+            alert('ganan Heroes')
+          }
+        }
+
+        this.dialogHero = true
       }
-      }
-
-      this.dialogHero = true
     },
 
     modalPoke(index) {
-      console.log('us ', this.us) // 2
-      console.log('us-poke')
-      this.imgPoke = this.pokemons[index].sprites.back_default
-      this.imgHero = this.heroes[0].image.url
+      if (this.usPoke) {
+        console.log('us ', this.us) // 2
+        console.log('us-poke')
+        this.imgPoke = this.pokemons[index].sprites.back_default
+        this.imgHero = this.heroes[0].image.url
 
-      this.atackPoke = (this.pokemons[index].stats[1].base_stat * 20) / 100
-      this.defHero = this.heroes[0].powerstats.combat
+        this.atackPoke = (this.pokemons[index].stats[1].base_stat * 20) / 100
+        this.defHero = this.heroes[0].powerstats.combat
 
-      console.log(this.pokemons[index])
+        console.log(this.pokemons[index])
 
-      if (this.atackPoke < this.defHero) {
-        
+        if (this.atackPoke < this.defHero) {
+          // this.heroes.shift()
+          console.log('resiste hero')
+        } else {
+          this.minusHero(this.heroes[0])
+          console.log('elimina hero')
+        }
 
-        // this.heroes.shift()
-        console.log('resiste hero')
-      } else {
-        this.minusHero(this.heroes[0])
-        console.log('elimina hero')
+        this.dialogPoke = true
       }
-
-      this.dialogPoke = true
     }
   },
 
