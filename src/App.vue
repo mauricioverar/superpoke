@@ -296,7 +296,7 @@ export default {
 .poke {
   width: 100px;
   /* margin-bottom: 10px; */
-  color: red;
+  color: blue;
   border: 2px solid black;
 }
 .imagen:hover {
