@@ -40,6 +40,7 @@
                   alt="Sin imágen"
                   class="hero imagen"
                 />
+                <!-- usHero -->
                 <div v-if="usHero">
                   <p class="">
                     {{ item.powerstats.strength }}💪 <span> __ </span>
@@ -69,6 +70,7 @@
                   alt="Sin imágen"
                   class="poke imagen"
                 />
+                <!-- usPoke -->
                 <div v-if="usPoke">
                   <p class="">
                     {{ (item.stats[1].base_stat * 60) / 100 }}💪
@@ -88,6 +90,24 @@
 
     <!-- dialogHero -->
     <v-dialog v-model="dialogHero" max-width="260">
+      <v-card>
+        <v-row>
+          <v-col>
+            <v-img max-height="250" max-width="250" :src="imgPoke"></v-img>
+            <h6 class="ms-3">
+              {{ defPoke }}🤚<span> - {{ rest }}💥 </span>
+            </h6>
+          </v-col>
+
+          <v-col>
+            <v-img max-height="250" max-width="250" :src="imgHero"></v-img>
+            <h6 class="ms-3">{{ atackHero }}💪</h6>
+          </v-col>
+        </v-row>
+      </v-card>
+    </v-dialog>
+        <!-- dialogHeroPc -->
+    <v-dialog v-model="dialogHeroPc" max-width="260">
       <v-card>
         <v-row>
           <v-col>
@@ -132,6 +152,25 @@
         </v-row>
       </v-card>
     </v-dialog>
+        <!-- dialogPokePc -->
+    <v-dialog v-model="dialogPokePc" max-width="290">
+      <v-card>
+        <v-row>
+          <v-col>
+            <v-img max-height="250" max-width="250" :src="imgHero"></v-img>
+            <h6 class="ms-3">
+              {{ defHero }}🤚<span> - {{ rest }}💥 </span>
+            </h6>
+          </v-col>
+
+          <v-col>
+            <v-img max-height="250" max-width="250" :src="imgPoke"></v-img>
+            <h6 class="ms-3">{{ atackPoke }}💪</h6>
+          </v-col>
+        </v-row>
+      </v-card>
+    </v-dialog>
+
 
     <!-- heroWin -->
     <v-dialog v-model="heroWin" max-width="290">
@@ -181,7 +220,9 @@ export default {
     inicio: true,
 
     dialogHero: false,
+    dialogHeroPc: false,
     dialogPoke: false,
+    dialogPokePc: false,
 
     imgHero: null,
     imgPoke: null,
@@ -222,7 +263,7 @@ export default {
 
     // opcionHero
     opcionHero() {
-      this.usHero = true
+      this.usHero = true // computaHero
       this.us = 1
       this.inicio = false // juego
       // console.log('inicio ', this.inicio, this.us)
@@ -236,9 +277,134 @@ export default {
       // console.log('usPoke us= ', this.us)
     },
 
+        // modalHero
+    modalHeroPc(clave) {
+      if (this.heroPc) {
+        this.turno = 1
+        // console.log('us ', this.us) // 1
+        // console.log('us-heroe')
+        this.imgHero = this.heroes[clave].image.url
+        this.imgPoke = this.pokemons[0].sprites.back_default
+
+        // console.log('this.defHero this.rest', this.defHero, this.rest)
+
+
+        this.atackHero = this.heroes[clave].powerstats.strength
+        this.defPoke = (this.pokemons[0].stats[2].base_stat * 20) / 100
+        // console.log('def ',this.pokemons[0].stats[2].base_stat)
+
+        // if (this.atackHero = null) {this.atackHero = 0}
+        // if (this.defPoke = null) {this.defPoke = 0}
+
+        let resta = 0
+        let def = this.defPoke - this.rest // 0
+        
+        this.pokemons[0].stats[2].base_stat = this.pokemons[0].stats[2].base_stat * 20 / 100 - def
+
+        if (
+          this.atackHero < this.defPoke - this.rest ||
+          this.atackHero == 'null'
+        ) {
+          // console.log('resiste poke')
+          let resta = this.defPoke - this.atackHero
+          this.rest = resta
+          // console.log(resta)
+          // console.log('def', this.defPoke)
+
+          // this.defPoke = resta
+          //  // console.log('def',this.defPoke)
+        } else {
+          this.minusPoke(this.pokemons[0])
+          this.rest = 0
+          // console.log('elimina poke')
+          // console.log(this.pokemons)
+
+          if (this.pokemons == '') {
+            setTimeout(() => {
+              this.heroWin = true
+            }, 500)
+            setTimeout(() => {
+              // console.log('ganan Heroes')
+              alert('otro juego?')
+              location.reload()
+            }, 1500)
+
+            // this.usHero = true
+          }
+        }
+
+        this.dialogHeroPc = true
+        this.turno = 2
+        // console.log(
+        //   'dialogHero usHero usPoke turno= ',
+        //   this.usHero,
+        //   this.usPoke,
+        //   this.turno
+        // )
+      }
+    },
+
+        // modalPoke ***
+    modalPokePc(index) {
+      if (this.pokePc) {
+        this.turno = 4
+        // console.log('this.pokePc ', this.pokePc)
+        // console.log('this.turno = 4 ')
+        // console.log('us ', this.us) // 2
+        // console.log('us-poke')
+        this.imgHero = this.heroes[0].image.url
+        this.defHero = this.heroes[0].powerstats.combat
+
+        // console.log('this.defPoke this.rest', this.defPoke, this.rest)
+
+        this.imgPoke = this.pokemons[index].sprites.back_default
+        this.atackPoke = (this.pokemons[index].stats[1].base_stat * 60) / 100
+        // console.log('atk ', this.pokemons[index].stats[1].base_stat)
+
+        //  // console.log(this.pokemons[index])
+        let resta = 0
+        let def = this.defHero - this.rest // 0
+
+        this.heroes[0].powerstats.combat = this.heroes[0].powerstats.combat - def
+
+        // console.log('rest ', this.rest)
+
+        if (this.atackPoke < def || this.atackPoke == 'null') {
+          // this.heroes.shift()
+          // console.log('resiste hero')
+          resta = def - this.atackPoke
+          // console.log('resta ', resta)
+
+          this.rest = resta
+          // console.log(resta)
+          // console.log('def', this.defHero)
+        } else {
+          this.minusHero(this.heroes[0])
+          // console.log('elimina hero')
+          this.rest = 0
+          if (this.heroes == '') {
+            setTimeout(() => {
+              this.pokeWin = true
+            }, 500)
+            setTimeout(() => {
+              // console.log('ganan Pokemones')
+              alert('otro juego?')
+              location.reload()
+            }, 1500)
+          }
+        }
+        // console.log('dialogPoke')
+
+        this.dialogPokePc = true
+        this.turno = 5
+      }
+    },
+
+
+
     // modalHero
     modalHero(clave) {
-      if (this.usHero || this.heroPc) {
+      if (this.usHero) { // if (this.usHero || this.heroPc) {
         this.turno = 1
         // console.log('us ', this.us) // 1
         // console.log('us-heroe')
@@ -305,8 +471,9 @@ export default {
 
     // modalPoke ***
     modalPoke(index) {
-      if (this.usPoke || this.pokePc) {
+      if (this.usPoke) { // if (this.usPoke || this.pokePc) {
         this.turno = 4
+        // console.log('this.pokePc ', this.pokePc)
         // console.log('this.turno = 4 ')
         // console.log('us ', this.us) // 2
         // console.log('us-poke')
@@ -369,7 +536,7 @@ export default {
       let rndPoke = parseInt(Math.random() * this.pokemons.length)
       // console.log('rndPoke...', rndPoke)
       this.pokePc = true
-      this.modalPoke(rndPoke)
+      this.modalPokePc(rndPoke)
     },
 
     // pcHero
@@ -383,7 +550,7 @@ export default {
       let rndHero = parseInt(Math.random() * this.heroes.length)
       // console.log('rndHero...', rndHero)
       this.heroPc = true
-      this.modalHero(rndHero)
+      this.modalHeroPc(rndHero)
     }
   },
 

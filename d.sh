@@ -2,6 +2,6 @@
 
 npm run build
 git add .
-git commit -m 'defensa'
+git commit -m 'pc'
 git push
 # Este es un comentario en bash  ./d.sh
